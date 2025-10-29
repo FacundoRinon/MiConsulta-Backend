@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model availabilities {
+  id                 String             @id
+  professional_id    String
+  day_of_week        Int
+  init_hour          DateTime
+  end_hour           DateTime
+  modality_id        String
+  state_id           String
+  modalities         modalities         @relation(fields: [modality_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  professionals      professionals      @relation(fields: [professional_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  availability_state availability_state @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  consult            consult[]
+}
+
+model availability_state {
+  id             String           @id
+  name           String
+  availabilities availabilities[]
+}
+
+model branch {
+  id                  String                @id
+  name                String
+  description         String
+  profession_id       String
+  professions         professions           @relation(fields: [profession_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  professional_branch professional_branch[]
+}
+
+model consult {
+  id                    String             @id
+  user_id               String
+  professional_id       String
+  availability_id       String
+  session_date          DateTime
+  init_hour             DateTime
+  end_hour              DateTime
+  type_id               String
+  recurrence_pattern_id String
+  recurrence_group_id   String
+  created_at            DateTime
+  location              String
+  modality_id           String
+  availabilities        availabilities     @relation(fields: [availability_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modalities            modalities         @relation(fields: [modality_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  professionals         professionals      @relation(fields: [professional_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  recurrence_group      recurrence_group   @relation(fields: [recurrence_group_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  recurrence_pattern    recurrence_pattern @relation(fields: [recurrence_pattern_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  consult_type          consult_type       @relation(fields: [type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                 users              @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model consult_type {
+  id      String    @id
+  name    String
+  consult consult[]
+}
+
+model locations {
+  id              String        @id
+  professional_id String
+  modality_id     String
+  address_or_link String
+  modalities      modalities    @relation(fields: [modality_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  professionals   professionals @relation(fields: [professional_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model modalities {
+  id             String           @id
+  name           String
+  availabilities availabilities[]
+  consult        consult[]
+  locations      locations[]
+}
+
+model professional_branch {
+  id              String        @id
+  professional_id String
+  branch_id       String
+  branch          branch        @relation(fields: [branch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  professionals   professionals @relation(fields: [professional_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model professional_states {
+  id            String          @id
+  name          String
+  professionals professionals[]
+}
+
+model professionals {
+  id                  String                @id
+  first_name          String
+  last_name           String
+  birth_date          DateTime              @db.Date
+  profession_id       String
+  country_id          String
+  location            String
+  img                 String?
+  description         String?
+  state_id            String
+  price               Decimal
+  created_at          DateTime
+  updated_at          DateTime
+  email               String
+  password            String
+  document_type_id    String
+  document_number     String
+  phone               String
+  availabilities      availabilities[]
+  consult             consult[]
+  locations           locations[]
+  professional_branch professional_branch[]
+  countries           countries             @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  professions         professions           @relation(fields: [profession_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  professional_states professional_states   @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model professions {
+  id            String          @id
+  name          String
+  branch        branch[]
+  professionals professionals[]
+}
+
+model recurrence_group {
+  id      String    @id
+  name    String
+  consult consult[]
+}
+
+model recurrence_pattern {
+  id      String    @id
+  name    String
+  consult consult[]
+}
+
+model user_states {
+  id    String  @id
+  name  String
+  users users[]
+}
+
+model users {
+  id               String        @id
+  first_name       String
+  last_name        String
+  email            String
+  location         String
+  img              String?
+  document_type_id String
+  document_number  Decimal
+  state_id         String
+  taken            String?
+  country_id       String
+  birth_date       DateTime      @db.Date
+  password         String
+  phone            String
+  created_at       DateTime
+  updated_at       DateTime
+  consult          consult[]
+  countries        countries     @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  document_type    document_type @relation(fields: [document_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_states      user_states   @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model countries {
+  id            String          @id @db.VarChar(45)
+  name          String          @db.VarChar(45)
+  professionals professionals[]
+  users         users[]
+}
+
+model document_type {
+  id    String  @id
+  name  String
+  users users[]
+}
