@@ -12,7 +12,7 @@ const dateFromString = z.preprocess((val) => {
 }, z.date());
 
 // ✅ Schema principal (para creación)
-export const UserSchema = z.object({
+export const ProfessionalSchema = z.object({
   id: z
     .string()
     .uuid()
@@ -20,36 +20,39 @@ export const UserSchema = z.object({
 
   first_name: z.string().min(1, "El nombre es obligatorio"),
   last_name: z.string().min(1, "El apellido es obligatorio"),
-  email: z.string().email("Debe ser un email válido"),
+  birth_date: dateFromString,
+  profession_id: z.string(),
+  country_id: z.string(),
   location: z.string().optional().default(""),
   img: z.string().optional().default(""),
+  description: z.string(),
+  state_id: z.string(),
+  price: z.number(),
+  created_at: z.date().default(() => new Date()),
+  updated_at: z.date().default(() => new Date()),
+  email: z.string().email("Debe ser un email válido"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
   document_type_id: z.string(),
   document_number: z.string(),
-  state_id: z.string(),
-  country_id: z.string(),
-  birth_date: dateFromString,
-  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
   phone: z
     .string()
     .min(6, "Número demasiado corto")
     .max(20, "Número demasiado largo")
     .optional()
     .default(""),
-  created_at: z.date().default(() => new Date()),
-  updated_at: z.date().default(() => new Date()),
 });
 
 // ✅ Schema para actualización (PATCH)
-export const UserUpdateSchema = UserSchema.partial()
+export const ProfessionalUpdateSchema = ProfessionalSchema.partial()
   .omit({
     id: true,
     created_at: true,
-    password: true, // se maneja en otro endpoint
+    password: true,
   })
   .extend({
-    updated_at: z.date().default(() => new Date()), // forzamos actualización
+    updated_at: z.date().default(() => new Date()),
   });
 
 // ✅ Tipados automáticos
-export type UserDTO = z.infer<typeof UserSchema>;
-export type UserUpdateDTO = z.infer<typeof UserUpdateSchema>;
+export type ProfessionalDTO = z.infer<typeof ProfessionalSchema>;
+export type ProfessionalUpdateDTO = z.infer<typeof ProfessionalUpdateSchema>;

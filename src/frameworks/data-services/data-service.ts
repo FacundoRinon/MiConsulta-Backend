@@ -14,23 +14,32 @@ import { Location } from "../../core/entities/location.entity";
 import { ConsultType } from "../../core/entities/consult_type.entity";
 import { RecurrencePattern } from "../../core/entities/recurrence_pattern.entity";
 import { RecurrenceGroup } from "../../core/entities/recurrence_group.entity";
+import { Country } from "../../core/entities/country.entity";
 
 export class DataService {
   private prisma: PrismaClient;
 
-  userss: IGenericRepository<User>;
-  userStatess: IGenericRepository<State>;
-  professionalss: IGenericRepository<Professional>;
-  professionss: IGenericRepository<Profession>;
-  consultss: IGenericRepository<Consult>;
-  availabilitiess: IGenericRepository<Availability>;
-  modalitiess: IGenericRepository<Modality>;
-  branchess: IGenericRepository<Branch>;
-  professionalBranchess: IGenericRepository<ProfessionalBranch>;
-  locationss: IGenericRepository<Location>;
-  consultTypess: IGenericRepository<ConsultType>;
-  recurrencePatternss: IGenericRepository<RecurrencePattern>;
-  recurrenceGroupss: IGenericRepository<RecurrenceGroup>;
+  userss: IGenericRepository<User | Partial<User>>;
+  userStatess: IGenericRepository<State | Partial<State>>;
+  professionalss: IGenericRepository<Professional | Partial<Professional>>;
+  professionss: IGenericRepository<Profession | Partial<Profession>>;
+  countriess: IGenericRepository<Country | Partial<Country>>;
+  consultss: IGenericRepository<Consult | Partial<Consult>>;
+  availabilitiess: IGenericRepository<Availability | Partial<Availability>>;
+  availabilityStatess: IGenericRepository<State | Partial<State>>;
+  modalitiess: IGenericRepository<Modality | Partial<Modality>>;
+  branchess: IGenericRepository<Branch | Partial<Branch>>;
+  professionalBranchess: IGenericRepository<
+    ProfessionalBranch | Partial<ProfessionalBranch>
+  >;
+  locationss: IGenericRepository<Location | Partial<Location>>;
+  consultTypess: IGenericRepository<ConsultType | Partial<ConsultType>>;
+  recurrencePatternss: IGenericRepository<
+    RecurrencePattern | Partial<RecurrencePattern>
+  >;
+  recurrenceGroupss: IGenericRepository<
+    RecurrenceGroup | Partial<RecurrenceGroup>
+  >;
 
   constructor() {
     this.prisma = new PrismaClient();
@@ -40,7 +49,11 @@ export class DataService {
     this.professionalss = new GenericRepository(this.prisma.professionals);
     this.professionss = new GenericRepository(this.prisma.professions);
     this.consultss = new GenericRepository(this.prisma.consult);
+    this.countriess = new GenericRepository(this.prisma.countries);
     this.availabilitiess = new GenericRepository(this.prisma.availabilities);
+    this.availabilityStatess = new GenericRepository(
+      this.prisma.availability_state
+    );
     this.modalitiess = new GenericRepository(this.prisma.modalities);
     this.branchess = new GenericRepository(this.prisma.branch);
     this.professionalBranchess = new GenericRepository(

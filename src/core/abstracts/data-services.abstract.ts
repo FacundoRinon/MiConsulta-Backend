@@ -20,6 +20,7 @@ export abstract class IDataServices {
   abstract professionss: IGenericRepository<Profession>;
   abstract consultss: IGenericRepository<Consult>;
   abstract availabilitiess: IGenericRepository<Availability>;
+  abstract availabilityStates: IGenericRepository<State>;
   abstract modalitiess: IGenericRepository<Modality>;
   abstract branchess: IGenericRepository<Branch>;
   abstract professionalBranchess: IGenericRepository<ProfessionalBranch>;
