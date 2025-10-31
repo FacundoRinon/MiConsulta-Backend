@@ -2,6 +2,8 @@ import { Availability } from "../entities/availability";
 import { Branch } from "../entities/branch.entity";
 import { Consult } from "../entities/consult.entity";
 import { ConsultType } from "../entities/consult_type.entity";
+import { Country } from "../entities/country.entity";
+import { DocumentType } from "../entities/document_type";
 import { Location } from "../entities/location.entity";
 import { Modality } from "../entities/modality.entity";
 import { Profession } from "../entities/profession.entity";
@@ -19,6 +21,8 @@ export abstract class IDataServices {
   abstract professionalss: IGenericRepository<Professional>;
   abstract professionss: IGenericRepository<Profession>;
   abstract consultss: IGenericRepository<Consult>;
+  abstract countriess: IGenericRepository<Country>;
+  abstract documentTypess: IGenericRepository<DocumentType>;
   abstract availabilitiess: IGenericRepository<Availability>;
   abstract availabilityStates: IGenericRepository<State>;
   abstract modalitiess: IGenericRepository<Modality>;

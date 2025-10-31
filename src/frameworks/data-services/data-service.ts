@@ -15,6 +15,7 @@ import { ConsultType } from "../../core/entities/consult_type.entity";
 import { RecurrencePattern } from "../../core/entities/recurrence_pattern.entity";
 import { RecurrenceGroup } from "../../core/entities/recurrence_group.entity";
 import { Country } from "../../core/entities/country.entity";
+import { DocumentType } from "../../core/entities/document_type";
 
 export class DataService {
   private prisma: PrismaClient;
@@ -22,11 +23,13 @@ export class DataService {
   userss: IGenericRepository<User | Partial<User>>;
   userStatess: IGenericRepository<State | Partial<State>>;
   professionalss: IGenericRepository<Professional | Partial<Professional>>;
+  professionalStatess: IGenericRepository<State | Partial<State>>;
   professionss: IGenericRepository<Profession | Partial<Profession>>;
   countriess: IGenericRepository<Country | Partial<Country>>;
   consultss: IGenericRepository<Consult | Partial<Consult>>;
   availabilitiess: IGenericRepository<Availability | Partial<Availability>>;
   availabilityStatess: IGenericRepository<State | Partial<State>>;
+  documentTypess: IGenericRepository<DocumentType | Partial<DocumentType>>;
   modalitiess: IGenericRepository<Modality | Partial<Modality>>;
   branchess: IGenericRepository<Branch | Partial<Branch>>;
   professionalBranchess: IGenericRepository<
@@ -47,6 +50,9 @@ export class DataService {
     this.userss = new GenericRepository(this.prisma.users);
     this.userStatess = new GenericRepository(this.prisma.user_states);
     this.professionalss = new GenericRepository(this.prisma.professionals);
+    this.professionalStatess = new GenericRepository(
+      this.prisma.professional_states
+    );
     this.professionss = new GenericRepository(this.prisma.professions);
     this.consultss = new GenericRepository(this.prisma.consult);
     this.countriess = new GenericRepository(this.prisma.countries);
@@ -54,6 +60,7 @@ export class DataService {
     this.availabilityStatess = new GenericRepository(
       this.prisma.availability_state
     );
+    this.documentTypess = new GenericRepository(this.prisma.document_type);
     this.modalitiess = new GenericRepository(this.prisma.modalities);
     this.branchess = new GenericRepository(this.prisma.branch);
     this.professionalBranchess = new GenericRepository(
