@@ -39,7 +39,7 @@ export const modalityController = {
   async updateModality(req: Request, res: Response) {
     try {
       const parsedData = ModalitySchema.parse(req.body);
-      const updatedModality = dataService.modalitiess.update(
+      const updatedModality = await dataService.modalitiess.update(
         req.params.id,
         parsedData
       );
@@ -54,7 +54,9 @@ export const modalityController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedModality = dataService.modalitiess.delete(req.params.id);
+      const deletedModality = await dataService.modalitiess.delete(
+        req.params.id
+      );
       res.status(201).json(deletedModality);
     } catch (error) {
       console.error("Error deleting modality: ", error);

@@ -1,5 +1,8 @@
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
+import { Encryptor } from "../../frameworks/encryptor/bcrypt";
+
+const encryptor = new Encryptor();
 
 // Transformador para convertir strings de fecha a objetos Date
 const dateFromString = z.preprocess((val) => {
@@ -12,7 +15,7 @@ const dateFromString = z.preprocess((val) => {
 }, z.date());
 
 // ✅ Schema principal (para creación)
-export const ProfessionalSchema = z.object({
+export const BaseProfessionalSchema = z.object({
   id: z
     .string()
     .uuid()
@@ -42,8 +45,18 @@ export const ProfessionalSchema = z.object({
     .default(""),
 });
 
+export const ProfessionalSchema = BaseProfessionalSchema.transform(
+  async (data) => {
+    const hashedPassword = await encryptor.encrypt(data.password);
+    return {
+      ...data,
+      password: hashedPassword,
+    };
+  }
+);
+
 // ✅ Schema para actualización (PATCH)
-export const ProfessionalUpdateSchema = ProfessionalSchema.partial()
+export const ProfessionalUpdateSchema = BaseProfessionalSchema.partial()
   .omit({
     id: true,
     created_at: true,

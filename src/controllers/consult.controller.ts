@@ -61,7 +61,7 @@ export const consultController = {
   async updateConsult(req: Request, res: Response) {
     try {
       const parsedData = ConsultUpdateSchema.parse(req.body);
-      const updatedConsult = dataService.consultss.update(
+      const updatedConsult = await dataService.consultss.update(
         req.params.id,
         parsedData
       );
@@ -76,7 +76,7 @@ export const consultController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedConsult = dataService.consultss.delete(req.params.id);
+      const deletedConsult = await dataService.consultss.delete(req.params.id);
       res.status(201).json(deletedConsult);
     } catch (error) {
       console.error("Error deleting consult: ", error);

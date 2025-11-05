@@ -21,6 +21,7 @@ export const professionalController = {
           professional_states: true,
           professions: true,
           // document_type: true,
+          password: false,
         }
       );
       res.json(professionals);
@@ -51,7 +52,7 @@ export const professionalController = {
 
   async createProfessional(req: Request, res: Response) {
     try {
-      const parsedProfessional = ProfessionalSchema.parse(req.body);
+      const parsedProfessional = await ProfessionalSchema.parseAsync(req.body);
       const newProfessional = await dataService.professionalss.create(
         parsedProfessional
       );
@@ -66,7 +67,7 @@ export const professionalController = {
     try {
       const parsedData = ProfessionalUpdateSchema.parse(req.body);
       parsedData.updated_at = new Date();
-      const updatedProfessional = dataService.professionalss.update(
+      const updatedProfessional = await dataService.professionalss.update(
         req.params.id,
         parsedData
       );
@@ -81,7 +82,7 @@ export const professionalController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedProfessional = dataService.professionalss.delete(
+      const deletedProfessional = await dataService.professionalss.delete(
         req.params.id
       );
       res.status(201).json(deletedProfessional);

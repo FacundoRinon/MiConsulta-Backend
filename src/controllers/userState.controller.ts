@@ -42,7 +42,7 @@ export const userStateController = {
     try {
       const parsedData = StateUpdateSchema.parse(req.body);
       // parsedData.updated_at = new Date();
-      const updatedUserState = dataService.userStatess.update(
+      const updatedUserState = await dataService.userStatess.update(
         req.params.id,
         parsedData
       );
@@ -57,7 +57,9 @@ export const userStateController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedUserState = dataService.userStatess.delete(req.params.id);
+      const deletedUserState = await dataService.userStatess.delete(
+        req.params.id
+      );
       res.status(201).json(deletedUserState);
     } catch (error) {
       console.error("Error deleting user state: ", error);

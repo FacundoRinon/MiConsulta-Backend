@@ -13,6 +13,8 @@ export const userController = {
           countries: true,
           user_states: true,
           document_type: true,
+          password: false,
+          document_number: false,
         }
       );
       res.json(users);
@@ -38,7 +40,7 @@ export const userController = {
 
   async createUser(req: Request, res: Response) {
     try {
-      const parsedUser = UserSchema.parse(req.body);
+      const parsedUser = await UserSchema.parseAsync(req.body);
       const newUser = await dataService.userss.create(parsedUser);
       res.status(201).json(newUser);
     } catch (error) {
@@ -51,7 +53,10 @@ export const userController = {
     try {
       const parsedData = UserUpdateSchema.parse(req.body);
       parsedData.updated_at = new Date();
-      const updatedUser = dataService.userss.update(req.params.id, parsedData);
+      const updatedUser = await dataService.userss.update(
+        req.params.id,
+        parsedData
+      );
       res.status(201).json(updatedUser);
     } catch (error) {
       console.error("Error updating user: ", error);
@@ -63,7 +68,7 @@ export const userController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedUser = dataService.userss.delete(req.params.id);
+      const deletedUser = await dataService.userss.delete(req.params.id);
       res.status(201).json(deletedUser);
     } catch (error) {
       console.error("Error deleting user: ", error);

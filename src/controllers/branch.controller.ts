@@ -14,7 +14,6 @@ export const branchController = {
         {},
         {
           professions: true,
-          professional_branch: true,
         }
       );
       res.json(branches);
@@ -28,7 +27,6 @@ export const branchController = {
     try {
       const branch = await dataService.branchess.get(req.params.id, {
         professions: true,
-        professional_branch: true,
       });
       res.json(branch);
     } catch (error) {
@@ -51,7 +49,7 @@ export const branchController = {
   async updateBranch(req: Request, res: Response) {
     try {
       const parsedData = BranchUpdateSchema.parse(req.body);
-      const updatedBranch = dataService.branchess.update(
+      const updatedBranch = await dataService.branchess.update(
         req.params.id,
         parsedData
       );
@@ -66,7 +64,7 @@ export const branchController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedBranch = dataService.branchess.delete(req.params.id);
+      const deletedBranch = await dataService.branchess.delete(req.params.id);
       res.status(201).json(deletedBranch);
     } catch (error) {
       console.error("Error deleting branch: ", error);

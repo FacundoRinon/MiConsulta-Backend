@@ -42,7 +42,7 @@ export const countryController = {
   async updateCountry(req: Request, res: Response) {
     try {
       const parsedData = CountryUpdateSchema.parse(req.body);
-      const updatedCountry = dataService.countriess.update(
+      const updatedCountry = await dataService.countriess.update(
         req.params.id,
         parsedData
       );
@@ -57,7 +57,7 @@ export const countryController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedCountry = dataService.countriess.delete(req.params.id);
+      const deletedCountry = await dataService.countriess.delete(req.params.id);
       res.status(201).json(deletedCountry);
     } catch (error) {
       console.error("Error deleting country: ", error);

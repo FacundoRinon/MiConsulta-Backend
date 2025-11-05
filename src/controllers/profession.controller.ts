@@ -42,7 +42,7 @@ export const professionController = {
     try {
       const parsedData = ProfessionSchema.parse(req.body);
       // parsedData.updated_at = new Date();
-      const updatedProfession = dataService.professionss.update(
+      const updatedProfession = await dataService.professionss.update(
         req.params.id,
         parsedData
       );
@@ -57,7 +57,9 @@ export const professionController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedProfession = dataService.professionss.delete(req.params.id);
+      const deletedProfession = await dataService.professionss.delete(
+        req.params.id
+      );
       res.status(201).json(deletedProfession);
     } catch (error) {
       console.error("Error deleting profession: ", error);

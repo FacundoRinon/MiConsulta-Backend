@@ -49,10 +49,8 @@ export const recurrencePatternController = {
     try {
       const parsedData = RecurrencePatternUpdateSchema.parse(req.body);
       // parsedData.updated_at = new Date();
-      const updatedRecurrencePattern = dataService.recurrencePatternss.update(
-        req.params.id,
-        parsedData
-      );
+      const updatedRecurrencePattern =
+        await dataService.recurrencePatternss.update(req.params.id, parsedData);
       res.status(201).json(updatedRecurrencePattern);
     } catch (error) {
       console.error("Error updating recurrence pattern: ", error);
@@ -64,9 +62,8 @@ export const recurrencePatternController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedRecurrencePattern = dataService.recurrencePatternss.delete(
-        req.params.id
-      );
+      const deletedRecurrencePattern =
+        await dataService.recurrencePatternss.delete(req.params.id);
       res.status(201).json(deletedRecurrencePattern);
     } catch (error) {
       console.error("Error deleting recurrence pattern: ", error);

@@ -47,7 +47,7 @@ export const recurrenceGroupController = {
     try {
       const parsedData = RecurrenceGroupUpdateSchema.parse(req.body);
       // parsedData.updated_at = new Date();
-      const updatedRecurrenceGroup = dataService.recurrenceGroupss.update(
+      const updatedRecurrenceGroup = await dataService.recurrenceGroupss.update(
         req.params.id,
         parsedData
       );
@@ -62,7 +62,7 @@ export const recurrenceGroupController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedRecurrenceGroup = dataService.recurrenceGroupss.delete(
+      const deletedRecurrenceGroup = await dataService.recurrenceGroupss.delete(
         req.params.id
       );
       res.status(201).json(deletedRecurrenceGroup);

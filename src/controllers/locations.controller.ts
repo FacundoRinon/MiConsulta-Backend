@@ -42,7 +42,7 @@ export const locationsController = {
   async updateLocation(req: Request, res: Response) {
     try {
       const parsedData = LocationsUpdateSchema.parse(req.body);
-      const updatedLocation = dataService.locationss.update(
+      const updatedLocation = await dataService.locationss.update(
         req.params.id,
         parsedData
       );
@@ -57,7 +57,9 @@ export const locationsController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedLocation = dataService.locationss.delete(req.params.id);
+      const deletedLocation = await dataService.locationss.delete(
+        req.params.id
+      );
       res.status(201).json(deletedLocation);
     } catch (error) {
       console.error("Error deleting location: ", error);

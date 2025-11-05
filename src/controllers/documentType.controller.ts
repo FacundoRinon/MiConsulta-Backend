@@ -48,7 +48,7 @@ export const documentTypeController = {
   async updateDocumentType(req: Request, res: Response) {
     try {
       const parsedData = DocumentTypeUpdateSchema.parse(req.body);
-      const updatedDocumentType = dataService.documentTypess.update(
+      const updatedDocumentType = await dataService.documentTypess.update(
         req.params.id,
         parsedData
       );
@@ -63,7 +63,7 @@ export const documentTypeController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedDocumentType = dataService.documentTypess.delete(
+      const deletedDocumentType = await dataService.documentTypess.delete(
         req.params.id
       );
       res.status(201).json(deletedDocumentType);

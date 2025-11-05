@@ -15,9 +15,11 @@ import { professionalStateRouter } from "./professionalState.routes";
 import { recurrenceGroupRouter } from "./recurrenceGroup.routes";
 import { recurrencePatternRouter } from "./recurrencePattern.routes";
 import { userStateRouter } from "./userState.routes";
+import { authRouter } from "./auth.routes";
 
 const router = Router();
 
+router.use("/auth", authRouter);
 router.use("/availabilities", availabilityRouter);
 router.use("/availabilityStates", availabilityStateRouter);
 router.use("/branches", branchRouter);

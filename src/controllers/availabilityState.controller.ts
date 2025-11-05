@@ -46,10 +46,8 @@ export const availabilityStateController = {
     try {
       const parsedData = StateUpdateSchema.parse(req.body);
       // parsedData.updated_at = new Date();
-      const updatedAvailabilityState = dataService.availabilityStatess.update(
-        req.params.id,
-        parsedData
-      );
+      const updatedAvailabilityState =
+        await dataService.availabilityStatess.update(req.params.id, parsedData);
       res.status(201).json(updatedAvailabilityState);
     } catch (error) {
       console.error("Error updating availability state: ", error);
@@ -61,9 +59,8 @@ export const availabilityStateController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedAvailabilityState = dataService.availabilityStatess.delete(
-        req.params.id
-      );
+      const deletedAvailabilityState =
+        await dataService.availabilityStatess.delete(req.params.id);
       res.status(201).json(deletedAvailabilityState);
     } catch (error) {
       console.error("Error deleting availability state: ", error);

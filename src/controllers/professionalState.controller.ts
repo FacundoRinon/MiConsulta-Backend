@@ -46,10 +46,8 @@ export const professionalStateController = {
     try {
       const parsedData = StateUpdateSchema.parse(req.body);
       // parsedData.updated_at = new Date();
-      const updatedProfessionalState = dataService.professionalStatess.update(
-        req.params.id,
-        parsedData
-      );
+      const updatedProfessionalState =
+        await dataService.professionalStatess.update(req.params.id, parsedData);
       res.status(201).json(updatedProfessionalState);
     } catch (error) {
       console.error("Error updating professional state: ", error);
@@ -61,9 +59,8 @@ export const professionalStateController = {
     try {
       // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
       // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
-      const deletedProfessionalState = dataService.professionalStatess.delete(
-        req.params.id
-      );
+      const deletedProfessionalState =
+        await dataService.professionalStatess.delete(req.params.id);
       res.status(201).json(deletedProfessionalState);
     } catch (error) {
       console.error("Error deleting professional state: ", error);
