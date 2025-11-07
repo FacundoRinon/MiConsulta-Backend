@@ -13,14 +13,13 @@ export const professionalController = {
       const professionals = await dataService.professionalss.getAll(
         {},
         {
-          availabilities: true,
-          consult: true,
-          locations: true,
+          consult: false,
+          locations: false,
           professional_branch: true,
           countries: true,
           professional_states: true,
           professions: true,
-          // document_type: true,
+          availabilities: false,
           password: false,
         }
       );
@@ -34,6 +33,7 @@ export const professionalController = {
   async getProfessionalById(req: Request, res: Response) {
     try {
       const professional = await dataService.professionalss.get(req.params.id, {
+        // password:false,
         availabilities: true,
         consult: true,
         locations: true,
@@ -41,8 +41,14 @@ export const professionalController = {
         countries: true,
         professional_states: true,
         professions: true,
-        // document_type: true,
+        document_type: true,
       });
+
+      if (!professional) {
+        return res.status(400).json({
+          error: "El profesional no existe en nuestra base de datos.",
+        });
+      }
       res.json(professional);
     } catch (error) {
       console.error("Error fetching professional:", error);
@@ -52,6 +58,16 @@ export const professionalController = {
 
   async createProfessional(req: Request, res: Response) {
     try {
+      const existingEmailArray = await dataService.professionalss.getAll({
+        email: req.body.email,
+      });
+      const existingEmail = existingEmailArray[0];
+      if (existingEmail) {
+        return res.status(400).json({
+          error: "El email ya esta registrado.",
+        });
+      }
+
       const parsedProfessional = await ProfessionalSchema.parseAsync(req.body);
       const newProfessional = await dataService.professionalss.create(
         parsedProfessional
@@ -65,6 +81,14 @@ export const professionalController = {
 
   async updateProfessional(req: Request, res: Response) {
     try {
+      const existingProfessional = await dataService.professionalss.get(
+        req.params.id
+      );
+      if (!existingProfessional) {
+        return res.status(400).json({
+          error: "El profesional no existe en nuestra base de datos.",
+        });
+      }
       const parsedData = ProfessionalUpdateSchema.parse(req.body);
       parsedData.updated_at = new Date();
       const updatedProfessional = await dataService.professionalss.update(
@@ -80,8 +104,16 @@ export const professionalController = {
 
   async deleteProfessional(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingProfessional = await dataService.professionalss.get(
+        req.params.id
+      );
+
+      if (!existingProfessional) {
+        return res.status(400).json({
+          error: "El profesional no existe en nuestra base de datos.",
+        });
+      }
+
       const deletedProfessional = await dataService.professionalss.delete(
         req.params.id
       );

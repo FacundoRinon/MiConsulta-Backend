@@ -17,6 +17,14 @@ export const userStateController = {
 
   async getUserStateById(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.userStatess.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El user state no existe en nuestra base de datos.",
+        });
+      }
+
       const userState = await dataService.userStatess.get(req.params.id);
       res.json(userState);
     } catch (error) {
@@ -40,8 +48,16 @@ export const userStateController = {
 
   async updateUserState(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.userStatess.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El user state no existe en nuestra base de datos.",
+        });
+      }
+
       const parsedData = StateUpdateSchema.parse(req.body);
-      // parsedData.updated_at = new Date();
+
       const updatedUserState = await dataService.userStatess.update(
         req.params.id,
         parsedData
@@ -55,8 +71,14 @@ export const userStateController = {
 
   async deleteUserState(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.userStatess.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El estado de usuario no existe en nuestra base de datos.",
+        });
+      }
+
       const deletedUserState = await dataService.userStatess.delete(
         req.params.id
       );

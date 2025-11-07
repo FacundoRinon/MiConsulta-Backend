@@ -22,6 +22,13 @@ export const availabilityStateController = {
       const availabilityState = await dataService.availabilityStatess.get(
         req.params.id
       );
+
+      if (!availabilityState) {
+        return res.status(400).json({
+          error:
+            "El estado de disponibilidad no existe en nuestra base de datos.",
+        });
+      }
       res.json(availabilityState);
     } catch (error) {
       console.error("Error fetching availability state:", error);
@@ -44,6 +51,16 @@ export const availabilityStateController = {
 
   async updateAvailabilityState(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.availabilityStatess.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error:
+            "El estado de disponibilidad no existe en nuestra base de datos.",
+        });
+      }
       const parsedData = StateUpdateSchema.parse(req.body);
       // parsedData.updated_at = new Date();
       const updatedAvailabilityState =
@@ -57,8 +74,17 @@ export const availabilityStateController = {
 
   async deleteAvailabilityState(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.availabilityStatess.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error:
+            "El estado de disponibilidad no existe en nuestra base de datos.",
+        });
+      }
+
       const deletedAvailabilityState =
         await dataService.availabilityStatess.delete(req.params.id);
       res.status(201).json(deletedAvailabilityState);

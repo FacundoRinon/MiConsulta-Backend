@@ -18,6 +18,13 @@ export const modalityController = {
   async getModalityById(req: Request, res: Response) {
     try {
       const modality = await dataService.modalitiess.get(req.params.id);
+
+      if (!modality) {
+        return res.status(400).json({
+          error: "La modalidad no existe en nuestra base de datos.",
+        });
+      }
+
       res.json(modality);
     } catch (error) {
       console.error("Error fetching modality:", error);
@@ -38,6 +45,14 @@ export const modalityController = {
 
   async updateModality(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.modalitiess.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "La modalidad no existe en nuestra base de datos.",
+        });
+      }
+
       const parsedData = ModalitySchema.parse(req.body);
       const updatedModality = await dataService.modalitiess.update(
         req.params.id,
@@ -52,11 +67,17 @@ export const modalityController = {
 
   async deleteModality(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.modalitiess.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "La modalidad no existe en nuestra base de datos.",
+        });
+      }
       const deletedModality = await dataService.modalitiess.delete(
         req.params.id
       );
+
       res.status(201).json(deletedModality);
     } catch (error) {
       console.error("Error deleting modality: ", error);

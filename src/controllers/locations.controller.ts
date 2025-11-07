@@ -20,7 +20,14 @@ export const locationsController = {
 
   async getLocationsById(req: Request, res: Response) {
     try {
-      const locations = await dataService.locationss.get(req.params.id);
+      const location = await dataService.locationss.get(req.params.id);
+
+      if (!location) {
+        return res.status(400).json({
+          error: "La ubicacion no existe en nuestra base de datos.",
+        });
+      }
+
       res.json(location);
     } catch (error) {
       console.error("Error fetching location:", error);
@@ -30,7 +37,11 @@ export const locationsController = {
 
   async createLocation(req: Request, res: Response) {
     try {
-      const parsedLocation = LocationsSchema.parse(req.body);
+      const professionalId = req.data.id;
+      const parsedLocation = LocationsSchema.parse({
+        ...req.body,
+        professional_id: professionalId,
+      });
       const newLocation = await dataService.locationss.create(parsedLocation);
       res.status(201).json(newLocation);
     } catch (error) {
@@ -41,6 +52,14 @@ export const locationsController = {
 
   async updateLocation(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.locationss.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "La ubicacion no existe en nuestra base de datos.",
+        });
+      }
+
       const parsedData = LocationsUpdateSchema.parse(req.body);
       const updatedLocation = await dataService.locationss.update(
         req.params.id,
@@ -55,8 +74,13 @@ export const locationsController = {
 
   async deleteLocation(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.locationss.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "La ubicacion no existe en nuestra base de datos.",
+        });
+      }
       const deletedLocation = await dataService.locationss.delete(
         req.params.id
       );

@@ -25,6 +25,12 @@ export const documentTypeController = {
   async getDocumentTypeById(req: Request, res: Response) {
     try {
       const documentType = await dataService.documentTypess.get(req.params.id);
+
+      if (!documentType) {
+        return res.status(400).json({
+          error: "El tipo de documento no existe en nuestra base de datos.",
+        });
+      }
       res.json(documentType);
     } catch (error) {
       console.error("Error fetching document type:", error);
@@ -47,6 +53,16 @@ export const documentTypeController = {
 
   async updateDocumentType(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.documentTypess.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El tipo de documento no existe en nuestra base de datos.",
+        });
+      }
+
       const parsedData = DocumentTypeUpdateSchema.parse(req.body);
       const updatedDocumentType = await dataService.documentTypess.update(
         req.params.id,
@@ -61,8 +77,16 @@ export const documentTypeController = {
 
   async deleteDocumentType(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.documentTypess.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El tipo de documento no existe en nuestra base de datos.",
+        });
+      }
+
       const deletedDocumentType = await dataService.documentTypess.delete(
         req.params.id
       );

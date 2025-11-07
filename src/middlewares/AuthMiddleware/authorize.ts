@@ -4,19 +4,18 @@ import { Request, Response, NextFunction } from "express";
 export const authorize =
   (allowedRoles: string[] = [], allowSelf = false) =>
   (req: Request, res: Response, next: NextFunction) => {
-    const user = (req as any).user;
-
-    if (!user) {
+    const data = req.data;
+    if (!data) {
       return res.status(401).json({ message: "No autenticado" });
     }
 
     // Si puede modificarse a sí mismo
-    if (allowSelf && req.params.id === user.id) {
+    if (allowSelf && req.params.id === data.id) {
       return next();
     }
 
     // Si tiene un rol permitido
-    if (allowedRoles.includes(user.role)) {
+    if (allowedRoles.includes(data.role)) {
       return next();
     }
 

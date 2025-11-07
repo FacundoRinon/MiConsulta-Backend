@@ -40,6 +40,12 @@ export const consultController = {
         consult_type: true,
         users: true,
       });
+
+      if (!consult) {
+        return res.status(400).json({
+          error: "La consulta no existe en nuestra base de datos.",
+        });
+      }
       res.json(consult);
     } catch (error) {
       console.error("Error fetching consult:", error);
@@ -49,7 +55,12 @@ export const consultController = {
 
   async createConsult(req: Request, res: Response) {
     try {
-      const parsedConsult = ConsultSchema.parse(req.body);
+      // Extraer el professional_id del token
+      const professionalId = req.data.id;
+      const parsedConsult = ConsultSchema.parse({
+        ...req.body,
+        professional_id: professionalId,
+      });
       const newConsult = await dataService.consultss.create(parsedConsult);
       res.status(201).json(newConsult);
     } catch (error) {
@@ -60,6 +71,14 @@ export const consultController = {
 
   async updateConsult(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.consultss.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "La consulta no existe en nuestra base de datos.",
+        });
+      }
+
       const parsedData = ConsultUpdateSchema.parse(req.body);
       const updatedConsult = await dataService.consultss.update(
         req.params.id,
@@ -74,8 +93,13 @@ export const consultController = {
 
   async deleteConsult(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.consultss.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "La consulta no existe en nuestra base de datos.",
+        });
+      }
       const deletedConsult = await dataService.consultss.delete(req.params.id);
       res.status(201).json(deletedConsult);
     } catch (error) {

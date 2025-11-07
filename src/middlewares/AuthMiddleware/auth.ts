@@ -23,7 +23,7 @@ export const authMiddleware = (
     };
 
     // guardamos los datos en la request
-    (req as any).user = decoded;
+    req.data = decoded;
 
     next();
   } catch (error) {

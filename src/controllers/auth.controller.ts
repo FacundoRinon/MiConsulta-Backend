@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { TokenManager } from "../frameworks/tokenManager/tokenManager"; // importa tu clase
 import bcrypt from "bcryptjs";
 import { DataService } from "../frameworks/data-services";
+import { sanitize } from "../utils/sanitize";
 
 const dataService = new DataService();
 
@@ -44,11 +45,14 @@ export const authController = {
         role: "user",
       });
 
+      // Se sanitiza el user para evitar enviar al front datos sensibles
+      const safeUser = sanitize(user, ["id", "password", "document_number"]);
+
       // Enviar token y algunos datos básicos
       return res.status(200).json({
         message: "Login exitoso",
         token,
-        user: user,
+        data: safeUser,
       });
     } catch (error) {
       console.error("Error en userLogin:", error);
@@ -97,11 +101,18 @@ export const authController = {
         role: "professional",
       });
 
+      // se sanitiza el professional para no mandar al front datos sensibles
+      const safeProfessional = sanitize(professional, [
+        "id",
+        "password",
+        "document_number",
+      ]);
+
       // Enviar token y algunos datos básicos
       return res.status(200).json({
         message: "Login exitoso",
         token,
-        professional: professional,
+        data: safeProfessional,
       });
     } catch (error) {
       console.error("Error en professionalLogin:", error);

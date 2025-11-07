@@ -21,6 +21,12 @@ export const consultTypeController = {
   async getConsultTypeById(req: Request, res: Response) {
     try {
       const consultType = await dataService.consultTypess.get(req.params.id);
+
+      if (!consultType) {
+        return res.status(400).json({
+          error: "El tipo de consulta no existe en nuestra base de datos.",
+        });
+      }
       res.json(consultType);
     } catch (error) {
       console.error("Error fetching consult type:", error);
@@ -43,6 +49,16 @@ export const consultTypeController = {
 
   async updateConsultType(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.consultTypess.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El tipo de consulta no existe en nuestra base de datos.",
+        });
+      }
+
       const parsedData = ConsultTypeUpdateSchema.parse(req.body);
       // parsedData.updated_at = new Date();
       const updatedConsultType = await dataService.consultTypess.update(
@@ -58,8 +74,15 @@ export const consultTypeController = {
 
   async deleteConsultType(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.consultTypess.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El tipo de consulta no existe en nuestra base de datos.",
+        });
+      }
       const deletedConsultType = await dataService.consultTypess.delete(
         req.params.id
       );

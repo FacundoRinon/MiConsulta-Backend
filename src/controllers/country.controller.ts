@@ -21,6 +21,12 @@ export const countryController = {
   async getCountryById(req: Request, res: Response) {
     try {
       const country = await dataService.countriess.get(req.params.id);
+
+      if (!country) {
+        return res.status(400).json({
+          error: "El pais no existe en nuestra base de datos.",
+        });
+      }
       res.json(country);
     } catch (error) {
       console.error("Error fetching country:", error);
@@ -41,6 +47,14 @@ export const countryController = {
 
   async updateCountry(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.countriess.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El pais no existe en nuestra base de datos.",
+        });
+      }
+
       const parsedData = CountryUpdateSchema.parse(req.body);
       const updatedCountry = await dataService.countriess.update(
         req.params.id,
@@ -55,8 +69,13 @@ export const countryController = {
 
   async deleteCountry(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.countriess.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El pais no existe en nuestra base de datos.",
+        });
+      }
       const deletedCountry = await dataService.countriess.delete(req.params.id);
       res.status(201).json(deletedCountry);
     } catch (error) {

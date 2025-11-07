@@ -25,6 +25,12 @@ export const recurrencePatternController = {
       const recurrencePattern = await dataService.recurrencePatternss.get(
         req.params.id
       );
+
+      if (!recurrencePattern) {
+        return res.status(400).json({
+          error: "El patron de recurrencia no existe en nuestra base de datos.",
+        });
+      }
       res.json(recurrencePattern);
     } catch (error) {
       console.error("Error fetching recurrence pattern:", error);
@@ -47,6 +53,15 @@ export const recurrencePatternController = {
 
   async updateRecurrencePattern(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.recurrencePatternss.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El patron de recurrencia no existe en nuestra base de datos.",
+        });
+      }
       const parsedData = RecurrencePatternUpdateSchema.parse(req.body);
       // parsedData.updated_at = new Date();
       const updatedRecurrencePattern =
@@ -60,10 +75,18 @@ export const recurrencePatternController = {
 
   async deleteRecurrencePattern(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.recurrencePatternss.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "El patron de recurrencia no existe en nuestra base de datos.",
+        });
+      }
       const deletedRecurrencePattern =
         await dataService.recurrencePatternss.delete(req.params.id);
+
       res.status(201).json(deletedRecurrencePattern);
     } catch (error) {
       console.error("Error deleting recurrence pattern: ", error);

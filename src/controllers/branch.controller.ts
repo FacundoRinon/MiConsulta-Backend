@@ -28,6 +28,12 @@ export const branchController = {
       const branch = await dataService.branchess.get(req.params.id, {
         professions: true,
       });
+
+      if (!branch) {
+        return res.status(400).json({
+          error: "La rama no existe en nuestra base de datos.",
+        });
+      }
       res.json(branch);
     } catch (error) {
       console.error("Error fetching branch:", error);
@@ -48,6 +54,14 @@ export const branchController = {
 
   async updateBranch(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.branchess.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "La rama no existe en nuestra base de datos.",
+        });
+      }
+
       const parsedData = BranchUpdateSchema.parse(req.body);
       const updatedBranch = await dataService.branchess.update(
         req.params.id,
@@ -62,8 +76,14 @@ export const branchController = {
 
   async deleteBranch(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.branchess.get(req.params.id);
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "La rama no existe en nuestra base de datos.",
+        });
+      }
+
       const deletedBranch = await dataService.branchess.delete(req.params.id);
       res.status(201).json(deletedBranch);
     } catch (error) {

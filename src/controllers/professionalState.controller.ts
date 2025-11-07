@@ -22,6 +22,14 @@ export const professionalStateController = {
       const professionalState = await dataService.professionalStatess.get(
         req.params.id
       );
+
+      if (!professionalState) {
+        return res.status(400).json({
+          error:
+            "El estado del profesional no existe en nuestra base de datos.",
+        });
+      }
+
       res.json(professionalState);
     } catch (error) {
       console.error("Error fetching professional state:", error);
@@ -44,6 +52,16 @@ export const professionalStateController = {
 
   async updateProfessionalState(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.professionalStatess.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error:
+            "El estado del profesional no existe en nuestra base de datos.",
+        });
+      }
       const parsedData = StateUpdateSchema.parse(req.body);
       // parsedData.updated_at = new Date();
       const updatedProfessionalState =
@@ -57,10 +75,19 @@ export const professionalStateController = {
 
   async deleteProfessionalState(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.professionalStatess.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error:
+            "El estado del profesional no existe en nuestra base de datos.",
+        });
+      }
       const deletedProfessionalState =
         await dataService.professionalStatess.delete(req.params.id);
+
       res.status(201).json(deletedProfessionalState);
     } catch (error) {
       console.error("Error deleting professional state: ", error);

@@ -37,6 +37,12 @@ export const availabilityController = {
           consult: true,
         }
       );
+
+      if (!availability) {
+        return res.status(400).json({
+          error: "La disponibilidad no existe en nuestra base de datos.",
+        });
+      }
       res.json(availability);
     } catch (error) {
       console.error("Error fetching availability:", error);
@@ -46,8 +52,13 @@ export const availabilityController = {
 
   async createAvailability(req: Request, res: Response) {
     try {
+      // extraer el professional_id (cree el type para extender req en Types)
+      const professionalId = req.data.id;
       // Validar body con Zod
-      const parsedAvailability = AvailabilitySchema.parse(req.body);
+      const parsedAvailability = AvailabilitySchema.parse({
+        ...req.body,
+        professional_id: professionalId,
+      });
       const { professional_id, day_of_week, init_hour, end_hour } =
         parsedAvailability;
 
@@ -107,6 +118,16 @@ export const availabilityController = {
 
   async updateAvailability(req: Request, res: Response) {
     try {
+      const existingResource = await dataService.availabilitiess.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "La disponibilidad no existe en nuestra base de datos.",
+        });
+      }
+
       // Validar body con Zod
       const parsedData = AvailabilityUpdateSchema.parse(req.body);
       const { professional_id, day_of_week, init_hour, end_hour } = parsedData;
@@ -194,8 +215,16 @@ export const availabilityController = {
 
   async deleteAvailability(req: Request, res: Response) {
     try {
-      // Aca tendria que validar que el usuario tiene token o validacion de ser el usuario a eliminar (Solo el mismo usuario se puede eliminar)
-      // Tambien se puede fijar si es un admin (El admin va a poder eliminar usuarios aunque no sea el dueño del mismo).
+      const existingResource = await dataService.availabilitiess.get(
+        req.params.id
+      );
+
+      if (!existingResource) {
+        return res.status(400).json({
+          error: "La disponibilidad no existe en nuestra base de datos.",
+        });
+      }
+
       const id = req.params.id;
 
       const existingAvailability = await dataService.availabilitiess.get(id);

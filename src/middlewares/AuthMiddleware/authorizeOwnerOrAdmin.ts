@@ -17,15 +17,15 @@ export const authorizeOwnerOrAdmin =
   ) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user = (req as any).user;
+      const data = req.data;
       const resourceId = req.params.id;
 
-      if (!user) {
+      if (!data) {
         return res.status(401).json({ message: "No autenticado" });
       }
 
       // Si es admin u otro rol permitido → pasa directo
-      if (allowedRoles.includes(user.role)) {
+      if (allowedRoles.includes(data.role)) {
         return next();
       }
 
@@ -43,7 +43,7 @@ export const authorizeOwnerOrAdmin =
       }
 
       // Validar propiedad
-      if (resource[ownerField] !== user.id) {
+      if (resource[ownerField] !== data.id) {
         return res.status(403).json({
           message: "No tenés permisos para modificar o eliminar este recurso",
         });
